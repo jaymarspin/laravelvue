@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Models\test;
+use App\Http\Controllers\TestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,9 +15,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('news', [TestController::class, 'index']);
+ 
+Route::get('news/{id}', function($id) {
+    return test::find($id);
 });
-Route::middleware(['cors'])->get('/users', function (Request $request) {
-    return $request->user();
+
+Route::post('news', [TestController::class, 'store']);
+
+Route::put('news/{id}', function(Request $request, $id) {
+    $test = test::findOrFail($id);
+    $test->update($request->all());
+
+    return $test;
+});
+
+Route::delete('news/{id}', function($id) {
+    test::find($id)->delete();
+
+    return 204;
 });

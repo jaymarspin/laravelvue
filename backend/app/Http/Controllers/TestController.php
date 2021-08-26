@@ -14,7 +14,7 @@ class TestController extends Controller
      */
     public function index()
     {
-        //
+        return test::all();
     }
 
     /**
@@ -35,7 +35,35 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $payload = json_decode($request->getContent(), true);
+        // test::create([
+        //     'title' => $payload['title'],
+        //     'content' => $payload['content'],
+        // ]);
+        $test = test::create([
+            'title' => $payload['title'],
+            'content' => $payload['content'],
+            
+          ]);
+   
+    $test->save();
+    if(! $test){
+        return response()->json(
+            [
+                'status' => '200',
+                'message' => 'Error Occured!'
+            ],
+            200
+        );
+    }
+    return response()->json(
+        [
+            'status' => '200',
+            'message' => 'success'
+        ],
+        200
+    );
+        
     }
 
     /**
@@ -44,9 +72,9 @@ class TestController extends Controller
      * @param  \App\Models\test  $test
      * @return \Illuminate\Http\Response
      */
-    public function show(test $test)
+    public function show($id)
     {
-        //
+        return test::find($id);
     }
 
     /**

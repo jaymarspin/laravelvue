@@ -16,8 +16,8 @@ class CreateTestsTable extends Migration
         Schema::create('tests', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('content');
-            $table->boolean('is_published');
+            $table->text('content');
+            $table->boolean('is_published')->default('1');
             $table->timestamps();
         });
     }

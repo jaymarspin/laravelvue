@@ -5,6 +5,7 @@
         <ion-buttons slot="start">
           <ion-back-button :text="getBackButtonText()" default-href="/"></ion-back-button>
         </ion-buttons>
+        <ion-label v-if="message" style="font-size: 30px">{{ message.title }}</ion-label>
       </ion-toolbar>
     </ion-header>
     
@@ -12,10 +13,9 @@
       
       
       <div class="ion-padding">
-        <h1>{{ message.subject }}</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
+        <i>{{ message.date }}</i>
+        <div style="font-size: 22px" v-html="message.content"></div>
+        
       </div>
     </ion-content>
   </ion-page>
@@ -23,16 +23,19 @@
 
 <script lang="ts">
 import { useRoute } from 'vue-router';
-import { IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonToolbar } from '@ionic/vue';
+import { IonBackButton, IonLabel,IonButtons, IonContent, IonHeader, IonPage, IonToolbar } from '@ionic/vue';
 import { personCircle } from 'ionicons/icons';
-import { getMessage } from '../data/messages';
+ 
 import { defineComponent } from 'vue';
-
+ 
+ 
 export default defineComponent({
   name: 'Home',
   data() {
     return {
       personCircle,
+      id: null,
+      message: null,
       getBackButtonText: () => {
         const win = window as any;
         const mode = win && win.Ionic && win.Ionic.mode;
@@ -40,11 +43,28 @@ export default defineComponent({
       }
     }
   },
-  setup() {
-    const route = useRoute();
-    const message = getMessage(parseInt(route.params.id as string, 10));
 
-    return { message }
+  methods: {
+    getData(){
+      const route = useRoute();
+      this.id = route.params.id as string
+      this.axios
+            .get(`http://127.0.0.1:8000/api/news/${this.id}`)
+            .then( response => {
+              console.log(response)
+              const data = {
+                  title: response.data.title,
+                  content: response.data.content,
+                  date: response.data.created_at
+                }
+
+                this.message = data
+              
+            })
+            .catch( (error) => {
+              console.log(error);
+            });
+    }
   },
   components: {
     IonBackButton,
@@ -53,7 +73,10 @@ export default defineComponent({
     IonHeader,
     IonPage,
     IonToolbar,
-  },
+    IonLabel,
+  },mounted(){
+    this.getData();
+  }
 });
 </script>
 
