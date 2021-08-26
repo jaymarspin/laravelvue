@@ -1,11 +1,17 @@
 
 <template>
     <div>
-
+      
     <main role="main">
 
       <!-- Main jumbotron for a primary marketing message or call to action -->
-      
+      <div>
+  <b-button v-b-modal.modal-1>Launch demo modal</b-button>
+
+  <b-modal id="modal-1" title="BootstrapVue">
+    <p class="my-4">Hello from modal!</p>
+  </b-modal>
+</div>
 
       <div class="container">
         <!-- Example row of columns -->
@@ -58,7 +64,6 @@
 </template>
 
 <script>
-
 
 
 </script>
